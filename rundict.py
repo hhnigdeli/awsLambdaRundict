@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from math import sin, cos, sqrt, atan2, radians
 
 
 def kml_to_df( file ,tag="LineString",seperator=","):
@@ -31,3 +32,37 @@ def kml_to_df( file ,tag="LineString",seperator=","):
             dataJSON = { "Lat":lat , "Long":long , "Alt":alt}
             
             return dataJSON
+
+def add_distance(data,radius=6371):
+     
+        #to calculate distances between to gps points and aculated distances 
+        distances = []
+        for i in range(len(data["Lat"])):
+            if i == 0:
+                distances.append(0)
+            else:
+                lat1 = radians(float(data["Lat"][i]))
+                lon1 = radians(float(data["Long"][i]))
+                lat2 = radians(float(data["Lat"][i-1]))
+                lon2 = radians(float(data["Long"][i-1]))
+                dlon = lon1 - lon2
+                dlat = lat1 - lat2
+        #to calculate distace between two points on the earth
+                a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+                c = 2 * atan2(sqrt(a), sqrt(1 - a))
+                distance = radius * c
+                distances.append(distance*1000)
+        cdistances = []
+        for i in range(len(distances)):
+            if i == 0:
+                cdistances.append(i)
+            else:
+                cdistances.append(sum(distances[:(i+1)]))
+        
+
+
+        dist = {"Dist":list(map(str,distances)),"Cdist":list(map(str,cdistances))}
+
+        return dist       
+
+
