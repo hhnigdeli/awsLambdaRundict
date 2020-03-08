@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 from math import sin, cos, sqrt, atan2, radians
 
 
-def kml_to_df( file ,tag="LineString",seperator=","):
+def kml_to_df( file ,tag="coordinates",seperator=","):
             """
             to  convert .kml file  to Pandas DataFrame        
             ---------------------------------------------------------------------------------------------
@@ -17,8 +17,13 @@ def kml_to_df( file ,tag="LineString",seperator=","):
             #to split merged text values by " "
             liste_0 =[data[i].split() for i in range(len(data))]
             liste_0[0].pop(0)
+            #to merge liste_0 data
+            liste_0_ =[]
+            for i in liste_0:
+                for c in i:
+                    liste_0_.append(c)
             #to split one column values three columns represent Lat Long and Alt 
-            liste_1=[i.split(seperator) for i in liste_0[0]]
+            liste_1=[i.split(seperator) for i in liste_0_]
             #to pop if any data missing 
             popindex = []
             for i in range(len(liste_1)):
